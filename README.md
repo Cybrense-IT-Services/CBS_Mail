@@ -13,6 +13,7 @@
 
 <p align="center">
   <a href="https://github.com/MrBoodj011/CBS_Mail/blob/main/LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue"></a>
+  <a href="https://github.com/MrBoodj011/CBS_Mail/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/MrBoodj011/CBS_Mail/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://roundcube.net/"><img alt="Built on Roundcube" src="https://img.shields.io/badge/built%20on-Roundcube-0b72ff"></a>
   <a href="https://cybrense.com/"><img alt="Cybrense website" src="https://img.shields.io/badge/website-cybrense.com-061d3a"></a>
   <img alt="Docker" src="https://img.shields.io/badge/docker-ready-2496ed">
@@ -30,6 +31,8 @@
   <a href="#architecture">Architecture</a>
   |
   <a href="#brand">Brand</a>
+  |
+  <a href="#project-docs">Docs</a>
   |
   <a href="#open-source-and-credits">Credits</a>
 </p>
@@ -302,6 +305,16 @@ Official Cybrense website:
 ```text
 https://cybrense.com/
 ```
+
+## Project Docs
+
+- `CONTRIBUTING.md` - local setup, verification, and pull request guidance.
+- `SECURITY.md` - private security reporting and sensitive-data rules.
+- `SUPPORT.md` - support expectations and bug report guidance.
+- `CODE_OF_CONDUCT.md` - community behavior expectations.
+- `docs/DEPLOYMENT.md` - generic production deployment checklist.
+- `docs/BRANDING.md` - branding assets and forking guidance.
+- `docs/ROADMAP.md` - short-term and long-term project direction.
 
 ## Development Checks
 
