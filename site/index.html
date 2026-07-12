@@ -95,14 +95,19 @@
               >Voir sur GitHub</a
             >
           </div>
-          <ul class="hero-facts" aria-label="Points cles">
+          <ul class="hero-facts" aria-label="Points clés">
             <li>Interface responsive</li>
             <li>PWA installable</li>
             <li>Licence GPL-3.0</li>
           </ul>
         </div>
 
-        <div class="product-stage" aria-label="Apercu de l'interface CBS Mail">
+        <div class="product-stage" aria-label="Aperçu de l'interface CBS Mail">
+          <div class="product-stage-bar" aria-hidden="true">
+            <span class="stage-dots"><i></i><i></i><i></i></span>
+            <span>CBS Mail / Boîte de réception</span>
+            <span class="stage-status">Aperçu du produit</span>
+          </div>
           <picture>
             <source
               media="(max-width: 640px)"
@@ -110,12 +115,33 @@
             />
             <img
               src="assets/product-desktop.png"
-              alt="Interface CBS Mail affichant la boite de reception sur ordinateur"
+              alt="Interface CBS Mail affichant la boîte de réception sur ordinateur"
               width="1440"
               height="900"
               fetchpriority="high"
             />
           </picture>
+        </div>
+      </section>
+
+      <section class="proof-strip" aria-label="CBS Mail en bref">
+        <div class="shell proof-grid">
+          <div class="proof-item">
+            <strong>Desktop + mobile</strong>
+            <span>Une interface qui s'adapte à chaque écran</span>
+          </div>
+          <div class="proof-item">
+            <strong>PWA ready</strong>
+            <span>Installable depuis le bureau ou le téléphone</span>
+          </div>
+          <div class="proof-item">
+            <strong>IMAP / SMTP</strong>
+            <span>La fiabilité de Roundcube comme fondation</span>
+          </div>
+          <div class="proof-item">
+            <strong>GPL-3.0</strong>
+            <span>Code public et contributions ouvertes</span>
+          </div>
         </div>
       </section>
 
@@ -132,7 +158,7 @@
           <p>
             CBS Mail conserve Roundcube comme client IMAP et ajoute une couche
             d'interface complète: navigation claire, vues mobiles, étiquettes
-            synchronisées et experience proche d'une application native.
+            synchronisées et expérience proche d'une application native.
           </p>
         </div>
       </section>
@@ -159,8 +185,8 @@
               <span class="feature-index">01</span>
               <h3>Responsive par conception</h3>
               <p>
-                Une boite de reception lisible sur ordinateur, tablette et
-                téléphone, avec navigation adaptee au toucher.
+                Une boîte de réception lisible sur ordinateur, tablette et
+                téléphone, avec navigation adaptée au toucher.
               </p>
             </article>
             <article class="feature-card">
@@ -175,7 +201,7 @@
               <span class="feature-index">03</span>
               <h3>PWA installable</h3>
               <p>
-                Manifest, icones, service worker et comportement web app pour un
+                Manifest, icônes, service worker et comportement web app pour un
                 accès rapide depuis le bureau ou l'écran d'accueil.
               </p>
             </article>
@@ -212,7 +238,7 @@
           <div class="mobile-device">
             <img
               src="assets/product-mobile.png"
-              alt="Boite de reception CBS Mail sur téléphone"
+              alt="Boîte de réception CBS Mail sur téléphone"
               width="1006"
               height="2048"
               loading="lazy"
@@ -335,7 +361,7 @@ docker compose up -d --build</code></pre>
             <a
               class="button button-primary"
               href="https://github.com/MrBoodj011/CBS_Mail"
-              >Explorer le depot</a
+              >Explorer le dépôt</a
             >
             <a
               class="button button-outline"
@@ -358,7 +384,7 @@ docker compose up -d --build</code></pre>
             Une boîte mail familière, avec une interface qui suit votre rythme.
           </h2>
           <a class="button button-light" href="https://mail.cybrense.com/"
-            >Acceder a CBS Mail</a
+            >Accéder à CBS Mail</a
           >
         </div>
       </section>

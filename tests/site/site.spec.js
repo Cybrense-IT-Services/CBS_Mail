@@ -14,6 +14,9 @@ test("renders the product and core landing content", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: /Lancez CBS Mail avec Docker/ }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "CBS Mail en bref" }),
+  ).toBeVisible();
 
   const heroImage = page.locator(".product-stage img");
   await expect(heroImage).toBeVisible();
