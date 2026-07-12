@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Improved mobile drawer toggles, keyboard focus states, and touch target sizing.
+- Fixed mobile access to label deletion controls and hardened mobile message mailbox routing.
 - Hardened one-tap mobile message opening and added a navigation fallback.
 - Fixed label persistence fallback, mailbox-scoped assignments, and stale label filters.
 - Fixed restoring hidden default labels and surfaced storage errors instead of showing false success.

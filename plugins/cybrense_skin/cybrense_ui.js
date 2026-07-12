@@ -1298,31 +1298,53 @@
     if (sidebar) {
       sidebar.classList.remove("cybrense-mobile-drawer-open");
     }
+
+    document.querySelectorAll(
+      "a.task-menu-button[href='#menu'], a.toolbar-menu-button[href='#menu'], a.button[href='#menu'], " +
+        "a.back-sidebar-button[href='#sidebar'], a.button[href='#sidebar']"
+    ).forEach(function (button) {
+      button.setAttribute("aria-expanded", "false");
+    });
   }
 
   function openMobileDrawer(kind) {
     var menu = document.querySelector("#layout-menu");
     var sidebar = document.querySelector("#layout-sidebar");
+    var target = kind === "folders" ? sidebar : menu;
+    var wasOpen;
 
     if (!isCompactAppLayout()) {
       return false;
     }
 
+    if (!target) {
+      return false;
+    }
+
+    wasOpen = target.classList.contains("cybrense-mobile-drawer-open");
     closeMobileDrawers();
-    if (kind === "folders") {
-      if (!sidebar) {
-        return false;
-      }
-      sidebar.classList.add("cybrense-mobile-drawer-open");
-      document.body.classList.add("cybrense-mobile-sidebar-open");
+    if (wasOpen) {
       return true;
     }
 
-    if (!menu) {
-      return false;
+    if (kind === "folders") {
+      sidebar.classList.add("cybrense-mobile-drawer-open");
+      document.body.classList.add("cybrense-mobile-sidebar-open");
+      document.querySelectorAll(
+        "a.back-sidebar-button[href='#sidebar'], a.button[href='#sidebar']"
+      ).forEach(function (button) {
+        button.setAttribute("aria-expanded", "true");
+      });
+      return true;
     }
+
     menu.classList.add("cybrense-mobile-drawer-open");
     document.body.classList.add("cybrense-mobile-menu-open");
+    document.querySelectorAll(
+      "a.task-menu-button[href='#menu'], a.toolbar-menu-button[href='#menu'], a.button[href='#menu']"
+    ).forEach(function (button) {
+      button.setAttribute("aria-expanded", "true");
+    });
     return true;
   }
 
@@ -1838,7 +1860,7 @@
       window.rcmail.preview_timer = null;
     }
 
-    mbox = typeof window.rcmail.get_message_mailbox === "function" ? window.rcmail.get_message_mailbox(uid) : "";
+    mbox = messageMailbox(uid);
     if (mbox && window.rcmail.env && mbox === window.rcmail.env.drafts_mailbox && typeof window.rcmail.open_compose_step === "function") {
       window.rcmail.open_compose_step({ _draft_uid: uid, _mbox: mbox });
       return;
