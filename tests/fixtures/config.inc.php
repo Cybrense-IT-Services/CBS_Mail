@@ -17,3 +17,7 @@ $config['skin_logo'] = [
     'elastic:*' => 'skins/elastic/branding/logo.png',
     'elastic:*[favicon]' => 'skins/elastic/branding/favicon-cybrense.ico',
 ];
+
+if (file_exists(__DIR__ . '/config.docker.inc.php')) {
+    include __DIR__ . '/config.docker.inc.php';
+}

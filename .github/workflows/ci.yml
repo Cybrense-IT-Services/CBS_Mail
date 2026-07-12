@@ -169,7 +169,10 @@ jobs:
 
       - name: Show container logs on failure
         if: failure()
-        run: docker compose -f tests/docker-compose.e2e.yml logs
+        run: |
+          docker compose -f tests/docker-compose.e2e.yml logs
+          docker compose -f tests/docker-compose.e2e.yml exec -T roundcube-e2e sh -lc \
+            'find /var/www/html/logs -maxdepth 1 -type f -print -exec tail -200 {} \;' || true
 
       - name: Stop test mail stack
         if: always()
