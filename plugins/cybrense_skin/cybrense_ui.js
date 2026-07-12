@@ -928,7 +928,7 @@
     syncLabelContext();
 
     if (!info || !label) {
-      return;
+      return false;
     }
 
     key = messageKeyFor(info.uid, info.mailbox);
@@ -951,9 +951,8 @@
 
     if (!writeLabelStore(store)) {
       showLabelNotice("Impossible d'enregistrer cette etiquette", "error");
-      return;
+      return false;
     }
-    renderMessageLabelPicker();
     applyMessageLabels();
     syncMessageListState();
     updateLabelCounts();
@@ -962,6 +961,11 @@
       (remove ? "Etiquette retiree: " : "Etiquette ajoutee: ") + label.name,
       remove ? "notice" : "confirmation"
     );
+    return {
+      active: !remove,
+      count: labels.length,
+      label: label
+    };
   }
 
   function createCustomLabel() {
@@ -2650,6 +2654,10 @@
     var activeLabels;
     var list;
     var assignButton;
+    var messageKeyValue;
+    var pickerSignature;
+    var statusText;
+    var statusTitle = "Cliquez directement sur une etiquette pour l'ajouter ou la retirer";
 
     if (!info || !anchor) {
       if (existing) {
@@ -2659,7 +2667,16 @@
     }
 
     store = readLabelStore();
-    activeLabels = normalizeLabelList(store.messages[messageKeyFor(info.uid, info.mailbox)]);
+    messageKeyValue = messageKeyFor(info.uid, info.mailbox);
+    activeLabels = normalizeLabelList(store.messages[messageKeyValue]);
+    pickerSignature = store.labels.map(function (label) {
+      return [
+        label.id,
+        label.name,
+        label.color,
+        activeLabels.indexOf(label.id) !== -1 ? "1" : "0"
+      ].join(":");
+    }).join("|");
 
     if (!existing) {
       existing = document.createElement("div");
@@ -2667,49 +2684,101 @@
       existing.innerHTML = [
         '<div class="cybrense-message-labels-top">',
         '<div class="cybrense-message-labels-title">Etiquettes</div>',
-        '<button type="button" class="cybrense-label-assign-button" aria-expanded="true">Assigner</button>',
+        '<span class="cybrense-label-assign-button is-status" role="status">Etiquettes (0)</span>',
         '</div>',
         '<div class="cybrense-message-labels-list"></div>'
       ].join("");
 
-      existing.addEventListener("click", function (event) {
-        var toggle = event.target.closest(".cybrense-label-assign-button");
-        var button = event.target.closest(".cybrense-message-label-chip");
+      var lastPointerLabel = "";
+      var lastPointerAt = 0;
 
-        if (toggle) {
-          event.preventDefault();
-          existing.classList.add("is-open");
-          toggle.setAttribute("aria-expanded", "true");
-          return;
-        }
+      function handleMessageLabelToggle(event) {
+        var button = event.target.closest(".cybrense-message-label-chip");
+        var labelId;
+        var now;
+        var result;
 
         if (!button) {
           return;
         }
 
-        toggleLabelForMessage(currentMessageInfo(), button.getAttribute("data-label-id"));
-        existing.classList.add("is-open");
+        if (button.getAttribute("data-label-pending") === "true") {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+
+        labelId = button.getAttribute("data-label-id");
+        now = Date.now();
+
+        if (event.type === "click" && labelId === lastPointerLabel && now - lastPointerAt < 700) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+
+        if (event.type === "pointerup") {
+          if (typeof event.button === "number" && event.button !== 0) {
+            return;
+          }
+          lastPointerLabel = labelId;
+          lastPointerAt = now;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        button.setAttribute("data-label-pending", "true");
+        result = toggleLabelForMessage(currentMessageInfo(), labelId);
+        if (!result) {
+          button.removeAttribute("data-label-pending");
+          return;
+        }
+
+        button.classList.toggle("active", result.active);
+        button.setAttribute("aria-pressed", result.active ? "true" : "false");
+        button.setAttribute("aria-label", (result.active ? "Retirer " : "Ajouter ") + result.label.name);
+        button.setAttribute("data-label-state", result.active ? "assigned" : "available");
+        button.title = result.active ? "Retirer " + result.label.name : "Ajouter " + result.label.name;
+        button.removeAttribute("data-label-pending");
+
         assignButton = existing.querySelector(".cybrense-label-assign-button");
         if (assignButton) {
-          assignButton.setAttribute("aria-expanded", "true");
+          assignButton.textContent = "Etiquettes (" + result.count + ")";
         }
-      });
+
+        existing.classList.add("is-open");
+        window.setTimeout(renderMessageLabelPicker, 0);
+      }
+
+      existing.addEventListener("pointerup", handleMessageLabelToggle, true);
+      existing.addEventListener("click", handleMessageLabelToggle, true);
 
       anchor.insertAdjacentElement("afterend", existing);
     }
 
-    existing.setAttribute("data-message-key", messageKeyFor(info.uid, info.mailbox));
+    if (existing.getAttribute("data-message-key") !== messageKeyValue) {
+      existing.setAttribute("data-message-key", messageKeyValue);
+    }
     existing.classList.add("is-open");
     assignButton = existing.querySelector(".cybrense-label-assign-button");
     if (assignButton) {
       assignButton.classList.add("is-status");
-      assignButton.setAttribute("aria-expanded", "true");
-      assignButton.setAttribute("aria-disabled", "true");
-      assignButton.textContent = "Etiquettes (" + activeLabels.length + ")";
-      assignButton.title = "Cliquez directement sur une etiquette pour l'ajouter ou la retirer";
+      statusText = "Etiquettes (" + activeLabels.length + ")";
+      if (assignButton.textContent !== statusText) {
+        assignButton.textContent = statusText;
+      }
+      if (assignButton.title !== statusTitle) {
+        assignButton.title = statusTitle;
+      }
     }
 
     list = existing.querySelector(".cybrense-message-labels-list");
+    if (existing.getAttribute("data-label-signature") === pickerSignature) {
+      return;
+    }
+
+    existing.setAttribute("data-label-signature", pickerSignature);
     list.innerHTML = "";
 
     store.labels.forEach(function (label) {

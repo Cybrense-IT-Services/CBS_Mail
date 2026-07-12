@@ -175,6 +175,22 @@ html.iframe body.action-show .cybrense-message-label-chip[data-color="gray"].act
   }
 }
 
+/* One interaction owns one label toggle. The counter is informational only. */
+html:not(.iframe) body.task-mail.action-show.cybrense-ui-ready .cybrense-label-assign-button.is-status,
+html.iframe body.task-mail.action-show .cybrense-label-assign-button.is-status,
+html.iframe body.action-show .cybrense-label-assign-button.is-status {
+  pointer-events: none !important;
+  cursor: default !important;
+  user-select: none !important;
+}
+
+html:not(.iframe) body.task-mail.action-show.cybrense-ui-ready .cybrense-message-label-chip,
+html.iframe body.task-mail.action-show .cybrense-message-label-chip,
+html.iframe body.action-show .cybrense-message-label-chip {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
 /* Final message-view placement: labels should feel like a compact mail control, not a separate big panel. */
 html:not(.iframe) body.task-mail.action-show.cybrense-ui-ready .cybrense-message-labels,
 html.iframe body.task-mail.action-show .cybrense-message-labels,
