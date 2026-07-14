@@ -11848,6 +11848,17 @@ html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-heade
   margin: 0 !important;
 }
 
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .input-group > input,
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .input-group > select,
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .input-group > textarea,
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .input-group > .form-control,
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .input-group > .recipient-input {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
 html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers input,
 html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers select,
 html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers textarea,
@@ -13129,40 +13140,87 @@ html:not(.iframe) body.cybrense-ui-ready #taskmenu .special-buttons a.logout {
 }
 
 /* The compose head object opens the form that contains the headers and editor.
- * Keep that form spanning the content area so it cannot collapse into the first grid row. */
+ * Use one flexible column instead of grid rows: Roundcube renders the send
+ * buttons outside that form, so grid tracks can otherwise reserve a large
+ * empty area on narrow windows. */
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #layout,
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #layout-content,
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+}
+
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form,
 html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form.formcontent,
 html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form.scroller {
-  grid-column: 1 !important;
-  grid-row: 1 / span 2 !important;
-  width: min(1040px, 100%) !important;
-  max-width: 1040px !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: none !important;
   min-width: 0 !important;
   min-height: 0 !important;
   height: auto !important;
-  margin: 0 auto !important;
+  align-self: stretch !important;
+  margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: visible !important;
 }
 
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form #compose-headers,
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form #composebodycontainer {
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  width: min(1040px, 100%) !important;
+  max-width: 1040px !important;
+  min-width: 0 !important;
+}
+
+html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form #composebodycontainer {
+  flex: 1 1 auto !important;
+  min-height: 390px !important;
+}
+
 html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > .formbuttons {
-  grid-column: 1 !important;
-  grid-row: 3 !important;
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  width: min(1040px, 100%) !important;
+  max-width: 1040px !important;
+  min-width: 0 !important;
+  margin-top: 0 !important;
 }
 
 @media screen and (max-width: 720px) {
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content {
+    gap: 12px !important;
+  }
+
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form,
   html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form.formcontent,
-  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form.scroller {
-    grid-row: 1 !important;
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form.scroller,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > .formbuttons {
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > .formbuttons {
-    grid-row: 2 !important;
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form #compose-headers,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form #composebodycontainer {
     width: 100% !important;
     max-width: 100% !important;
+  }
+
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-content > form #composebodycontainer {
+    min-height: 320px !important;
   }
 }
 
