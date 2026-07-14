@@ -7,6 +7,7 @@
 - Removed the duplicate visual field around recipient inputs by keeping the Roundcube wrapper as the only bordered control.
 - Centered compose actions in the desktop header while preserving a collision-free mobile toolbar flow.
 - Aligned compose option labels to the left with switches and selects on a consistent right edge.
+- Restyled message-view forwarding, reply-all, and action menus with stable spacing, layering, and mobile sizing.
 - Improved mobile message cards with persistent dates, keyboard-open support, and visible focus states.
 - Hardened mobile one-tap navigation to open the full message route reliably in browsers and PWA mode.
 - Made list label rendering and bulk assignment mailbox-aware to prevent cross-mailbox label mix-ups.
