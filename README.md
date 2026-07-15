@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/MrBoodj011/CBS_Mail">
+  <a href="https://github.com/Cybrense-IT-Services/CBS_Mail">
     <img src="docs/assets/readme-header.png" alt="CBS Mail - Roundcube-based webmail UI" width="100%">
   </a>
 </p>
@@ -12,8 +12,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/MrBoodj011/CBS_Mail/blob/main/LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue"></a>
-  <a href="https://github.com/MrBoodj011/CBS_Mail/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/MrBoodj011/CBS_Mail/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/Cybrense-IT-Services/CBS_Mail/blob/main/LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue"></a>
+  <a href="https://github.com/Cybrense-IT-Services/CBS_Mail/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Cybrense-IT-Services/CBS_Mail/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://roundcube.net/"><img alt="Built on Roundcube" src="https://img.shields.io/badge/built%20on-Roundcube-0b72ff"></a>
   <a href="https://cybrense.com/"><img alt="Cybrense website" src="https://img.shields.io/badge/website-cybrense.com-061d3a"></a>
   <img alt="Docker" src="https://img.shields.io/badge/docker-ready-2496ed">
@@ -25,6 +25,8 @@
   <a href="#why-cbs-mail">Why</a>
   |
   <a href="#project-website">Website</a>
+  |
+  <a href="#product-preview">Preview</a>
   |
   <a href="#features">Features</a>
   |
@@ -64,6 +66,26 @@ npm run site:test
 
 The production Nginx example is available at
 [`deploy/nginx-cbsmail-site.conf.example`](deploy/nginx-cbsmail-site.conf.example).
+
+## Product Preview
+
+Real desktop and mobile captures are included with the repository and validated
+by the browser test suite.
+
+<p align="center">
+  <a href="site/assets/product-desktop.png">
+    <img src="site/assets/product-desktop.png" alt="CBS Mail desktop interface" width="73%">
+  </a>
+  &nbsp;
+  <a href="site/assets/product-mobile.png">
+    <img src="site/assets/product-mobile.png" alt="CBS Mail mobile interface" width="23%">
+  </a>
+</p>
+
+<p align="center">
+  <strong>Responsive by design:</strong> a focused three-panel desktop workspace
+  and a touch-friendly mobile mailbox.
+</p>
 
 ## Why CBS Mail
 
@@ -175,7 +197,7 @@ Requirements:
 Clone:
 
 ```bash
-git clone https://github.com/MrBoodj011/CBS_Mail.git
+git clone https://github.com/Cybrense-IT-Services/CBS_Mail.git
 cd CBS_Mail
 ```
 
