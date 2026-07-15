@@ -7,7 +7,7 @@
 <h1 align="center">CBS Mail</h1>
 
 <p align="center">
-  Created and developed by <a href="https://github.com/MrBoodj011"><strong>MrBoodj011</strong></a>
+  Created and developed by <a href="https://github.com/Cybrense-IT-Services/CBS_Mail/graphs/contributors"><strong>MrBoodj011</strong></a>
 </p>
 
 <p align="center">
