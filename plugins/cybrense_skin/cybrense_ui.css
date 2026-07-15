@@ -13359,6 +13359,60 @@ html:not(.iframe) body.cybrense-ui-ready #taskmenu .special-buttons a.logout {
   html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #composebodycontainer {
     min-height: 320px !important;
   }
+
+  /* Recipient chips must be allowed to wrap on phones. The fixed 42px
+   * wrapper used by Elastic clips long contact names after selection. */
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input {
+    height: auto !important;
+    min-height: 42px !important;
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-wrap: wrap !important;
+    align-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 5px 8px !important;
+    overflow: hidden !important;
+    line-height: normal !important;
+  }
+
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input input,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input textarea {
+    flex: 1 1 84px !important;
+    width: auto !important;
+    min-width: 84px !important;
+    max-width: 100% !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    line-height: 30px !important;
+  }
+
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input .address,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input .token,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input li {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    display: inline-flex !important;
+    flex: 0 1 auto !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    border-radius: 9px !important;
+    box-sizing: border-box !important;
+  }
+
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input .address > *,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input .token > *,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input li > *,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input .name,
+  html:not(.iframe) body.task-mail.action-compose.cybrense-ui-ready #compose-headers .recipient-input .email {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
 }
 
 /* The compose head object opens the form that contains the headers and editor.
