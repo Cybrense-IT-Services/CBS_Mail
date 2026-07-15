@@ -9,13 +9,13 @@ test("renders the product and core landing content", async ({ page }) => {
     page.getByRole("heading", { level: 1, name: "CBS Mail" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: /Roundcube, repens/ }),
+    page.getByRole("heading", { name: /Roundcube, refined/ }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: /Lancez CBS Mail avec Docker/ }),
+    page.getByRole("heading", { name: /Run CBS Mail with Docker/ }),
   ).toBeVisible();
   await expect(
-    page.getByRole("region", { name: "CBS Mail en bref" }),
+    page.getByRole("region", { name: "CBS Mail at a glance" }),
   ).toBeVisible();
 
   const heroImage = page.locator(".product-stage img");

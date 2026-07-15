@@ -52,14 +52,14 @@
 
       try {
         await navigator.clipboard.writeText(target.innerText.trim());
-        button.textContent = "Copie";
-        status.textContent = "Commandes copiees dans le presse-papiers.";
+        button.textContent = "Copied";
+        status.textContent = "Commands copied to the clipboard.";
       } catch (error) {
-        status.textContent = "Selectionnez les commandes pour les copier.";
+        status.textContent = "Select the commands to copy them manually.";
       }
 
       window.setTimeout(function () {
-        button.textContent = "Copier";
+        button.textContent = "Copy";
         status.textContent = "";
       }, 2400);
     });
