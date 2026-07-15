@@ -26,8 +26,6 @@
   |
   <a href="#project-website">Website</a>
   |
-  <a href="#product-preview">Preview</a>
-  |
   <a href="#features">Features</a>
   |
   <a href="#quick-start">Quick Start</a>
@@ -66,26 +64,6 @@ npm run site:test
 
 The production Nginx example is available at
 [`deploy/nginx-cbsmail-site.conf.example`](deploy/nginx-cbsmail-site.conf.example).
-
-## Product Preview
-
-Real desktop and mobile captures are included with the repository and validated
-by the browser test suite.
-
-<p align="center">
-  <a href="site/assets/product-desktop.png">
-    <img src="site/assets/product-desktop.png" alt="CBS Mail desktop interface" width="73%">
-  </a>
-  &nbsp;
-  <a href="site/assets/product-mobile.png">
-    <img src="site/assets/product-mobile.png" alt="CBS Mail mobile interface" width="23%">
-  </a>
-</p>
-
-<p align="center">
-  <strong>Responsive by design:</strong> a focused three-panel desktop workspace
-  and a touch-friendly mobile mailbox.
-</p>
 
 ## Why CBS Mail
 
