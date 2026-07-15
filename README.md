@@ -7,6 +7,10 @@
 <h1 align="center">CBS Mail</h1>
 
 <p align="center">
+  Created and developed by <a href="https://github.com/Cybrense-IT-Services/CBS_Mail/graphs/contributors"><strong>MrBoodj011</strong></a>
+</p>
+
+<p align="center">
   A modern, mobile-ready Roundcube webmail experience with a custom Cybrense/CBS
   UI skin, plugin layer, PWA support, and synchronized per-user label management.
 </p>
