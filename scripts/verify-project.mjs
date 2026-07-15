@@ -81,8 +81,8 @@ for (const file of [
   "site/index.html",
   "site/styles.css",
   "site/site.js",
-  "site/assets/product-desktop.png",
-  "site/assets/product-mobile.png"
+  "site/assets/product-desktop-en.png",
+  "site/assets/product-mobile-en.png"
 ]) {
   requireFile(file);
 }
