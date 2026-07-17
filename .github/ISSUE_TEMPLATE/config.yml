@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security issue
-    url: https://github.com/MrBoodj011/CBS_Mail/security/advisories/new
+    url: https://github.com/Cybrense-IT-Services/CBS_Mail/security/advisories/new
     about: Please report exploitable security issues privately.
   - name: Cybrense website
     url: https://cybrense.com/

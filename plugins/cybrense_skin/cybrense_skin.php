@@ -94,12 +94,7 @@ class cybrense_skin extends rcube_plugin
                 return;
             }
 
-            $host = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
-            $proto = !empty($_SERVER['HTTP_X_FORWARDED_PROTO'])
-                ? $_SERVER['HTTP_X_FORWARDED_PROTO']
-                : (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http');
-            $proto = in_array($proto, ['http', 'https'], true) ? $proto : 'https';
-            $manifest_url = $host ? $proto . '://' . $host . '/cybrense-manifest.json' : '/cybrense-manifest.json';
+            $manifest_url = '/cybrense-manifest.json';
             $worker_url = '/cybrense-sw.js';
 
             $rcmail->output->set_env('cybrense_pwa_service_worker', $worker_url);

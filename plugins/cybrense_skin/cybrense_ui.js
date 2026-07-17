@@ -2325,15 +2325,6 @@
     layout.setAttribute("data-cybrense-mobile-pane-nav", "true");
     document.addEventListener("click", function (event) {
       var backToList;
-      var menuButton;
-      var folderButton;
-
-      menuButton = event.target.closest && event.target.closest("a.task-menu-button[href='#menu'], a.toolbar-menu-button[href='#menu'], a.button[href='#menu']");
-      if (menuButton && openMobileDrawer("menu")) {
-        event.preventDefault();
-        event.stopPropagation();
-        return;
-      }
 
       if (!isMobileMailLayout()) {
         return;
@@ -2345,13 +2336,6 @@
         event.stopPropagation();
         closeMobileDrawers();
         setMobileMailPane("list");
-        return;
-      }
-
-      folderButton = event.target.closest && event.target.closest("a.back-sidebar-button[href='#sidebar'], a.button[href='#sidebar']");
-      if (folderButton && openMobileDrawer("folders")) {
-        event.preventDefault();
-        event.stopPropagation();
       }
     }, true);
   }
@@ -2596,11 +2580,6 @@
   }
 
   var remoteObjectActionsBound = false;
-  var REMOTE_TRUST_STORE_KEY = "cybrense.remote.trusted.v1";
-
-  function remoteTrustStoreKey() {
-    return REMOTE_TRUST_STORE_KEY + "." + labelAccountKey().replace(/[^a-z0-9@._+-]+/gi, "-");
-  }
 
   function remoteCommandTarget(contextWindow) {
     var win = contextWindow || window;
@@ -2670,65 +2649,32 @@
     });
   }
 
-  function readRemoteTrustStore() {
-    var storageKey = remoteTrustStoreKey();
-    var values;
-
-    try {
-      values = JSON.parse(window.localStorage.getItem(storageKey) || "null");
-      if (Array.isArray(values)) {
-        return values;
-      }
-
-      values = JSON.parse(window.localStorage.getItem(REMOTE_TRUST_STORE_KEY) || "[]");
-      if (Array.isArray(values) && values.length) {
-        window.localStorage.setItem(storageKey, JSON.stringify(values));
-        window.localStorage.removeItem(REMOTE_TRUST_STORE_KEY);
-      }
-
-      return Array.isArray(values) ? values : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function writeRemoteTrustStore(values) {
-    try {
-      window.localStorage.setItem(remoteTrustStoreKey(), JSON.stringify(unique(values)));
-    } catch (error) {
-      // Local trust is a convenience cache; server-side prefs remain authoritative.
-    }
-  }
-
   function trustRemoteSender(sender) {
     var email = normalizeRemoteSender(sender);
     var trusted;
 
-    if (!email) {
+    if (!email || !window.rcmail || !window.rcmail.env) {
       return;
     }
 
-    trusted = readRemoteTrustStore().map(normalizeRemoteSender).filter(Boolean);
+    trusted = Array.isArray(window.rcmail.env.cybrense_trusted_remote_senders)
+      ? window.rcmail.env.cybrense_trusted_remote_senders.map(normalizeRemoteSender).filter(Boolean)
+      : [];
+
     if (trusted.indexOf(email) === -1) {
       trusted.push(email);
-      writeRemoteTrustStore(trusted);
+      window.rcmail.env.cybrense_trusted_remote_senders = unique(trusted);
     }
   }
 
   function isRemoteSenderTrusted(sender) {
     var email = normalizeRemoteSender(sender);
-    var trusted;
 
     if (!email) {
       return false;
     }
 
     if (remoteDomainMatchesTrustedDomains(email)) {
-      return true;
-    }
-
-    trusted = readRemoteTrustStore().map(normalizeRemoteSender).filter(Boolean);
-    if (trusted.indexOf(email) !== -1) {
       return true;
     }
 

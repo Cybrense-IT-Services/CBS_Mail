@@ -104,14 +104,14 @@ experience, branding, integration, and deployment workflow.
   <tr>
     <td width="72%" align="center">
       <a href="https://cbsmail.cybrense.com/">
-        <img src="https://raw.githubusercontent.com/MrBoodj011/CBS_Mail/main/assets/cbs-mail-desktop.png" alt="CBS Mail desktop interface" width="100%">
+        <img src="https://raw.githubusercontent.com/Cybrense-IT-Services/CBS_Mail/main/assets/cbs-mail-desktop.png" alt="CBS Mail desktop interface" width="100%">
       </a>
       <br>
       <strong>Desktop workspace</strong>
     </td>
     <td width="28%" align="center">
       <a href="https://cbsmail.cybrense.com/">
-        <img src="https://raw.githubusercontent.com/MrBoodj011/CBS_Mail/main/assets/cbs-mail-mobile.png" alt="CBS Mail mobile interface" width="100%">
+        <img src="https://raw.githubusercontent.com/Cybrense-IT-Services/CBS_Mail/main/assets/cbs-mail-mobile.png" alt="CBS Mail mobile interface" width="100%">
       </a>
       <br>
       <strong>Mobile mailbox</strong>
@@ -548,5 +548,4 @@ Contributions are welcome. See `CONTRIBUTING.md`.
 
 Please do not open public issues for exploitable security problems. See
 `SECURITY.md`.
-
 

@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "20"
 
@@ -101,7 +101,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -135,16 +135,20 @@ jobs:
           import time
           from email.message import EmailMessage
 
-          message = EmailMessage()
-          message["From"] = "sender@example.test"
-          message["To"] = "test@example.test"
-          message["Subject"] = "CBS Mail label regression"
-          message.set_content("This message exercises the responsive mail and label workflow.")
+          messages = []
+          for index in range(1, 3):
+              message = EmailMessage()
+              message["From"] = "sender@example.test"
+              message["To"] = "test@example.test"
+              message["Subject"] = f"CBS Mail label regression {index}"
+              message.set_content("This message exercises the responsive mail and label workflow.")
+              messages.append(message)
 
           for attempt in range(30):
               try:
                   with smtplib.SMTP("127.0.0.1", 3025) as smtp:
-                      smtp.send_message(message)
+                      for message in messages:
+                          smtp.send_message(message)
                   break
               except OSError:
                   if attempt == 29:

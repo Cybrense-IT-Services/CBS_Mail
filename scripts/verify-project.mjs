@@ -20,6 +20,7 @@ function requireFile(file) {
 const compose = read("docker-compose.yml");
 const dockerfile = read("Dockerfile");
 const serviceWorker = read("pwa/cybrense-sw.js");
+const uiScript = read("plugins/cybrense_skin/cybrense_ui.js");
 if (!/FROM roundcube\/roundcubemail@sha256:[a-f0-9]{64}/.test(dockerfile)) {
   failures.push("Dockerfile: Roundcube base image must be pinned by digest");
 }
@@ -36,6 +37,24 @@ requireText("docker-compose.yml", "strpos($$body", "healthcheck must inspect res
 requireText("docker-compose.yml", "_user", "healthcheck must require the login form");
 requireText("docker-compose.yml", "CBS_MAIL_HTTP_PORT", "host port must be configurable");
 requireText("docker-compose.yml", "CBS_MAIL_CONTAINER_NAME", "container name must be configurable");
+requireText(
+  "Dockerfile",
+  'org.opencontainers.image.source="https://github.com/Cybrense-IT-Services/CBS_Mail"',
+  "container source metadata must point to the official repository"
+);
+requireText(
+  ".github/ISSUE_TEMPLATE/config.yml",
+  "https://github.com/Cybrense-IT-Services/CBS_Mail/security/advisories/new",
+  "security reports must target the official repository"
+);
+
+if (read("site/index.html").includes("github.com/MrBoodj011/CBS_Mail")) {
+  failures.push("site/index.html: public links must point to the official repository");
+}
+
+if (uiScript.includes("cybrense.remote.trusted.v1") || uiScript.includes("REMOTE_TRUST_STORE_KEY")) {
+  failures.push("plugins/cybrense_skin/cybrense_ui.js: trusted sender addresses must not be cached in browser storage");
+}
 
 if (!serviceWorker.includes('event.request.mode === "navigate"')) {
   failures.push("pwa/cybrense-sw.js: navigation fallback is missing");
