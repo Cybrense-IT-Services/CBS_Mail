@@ -1,6 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>Cybrense-IT-Services/cybrense-maintainer"
+    "github>Cybrense-IT-Services/Hawk"
+  ],
+  "dependencyDashboard": false,
+  "major": {
+    "dependencyDashboardApproval": false
+  },
+  "packageRules": [
+    {
+      "description": "Use reviewed pull requests instead of the legacy dependency dashboard",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": false
+    }
   ]
 }
