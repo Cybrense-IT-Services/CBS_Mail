@@ -18,6 +18,18 @@ async function expectNoPageOverflow(page) {
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1);
 }
 
+async function closeDrawerFromBackdrop(backdrop) {
+  const box = await backdrop.boundingBox();
+
+  expect(box).not.toBeNull();
+  await backdrop.click({
+    position: {
+      x: Math.max(1, box.width - 8),
+      y: Math.max(1, Math.min(box.height - 8, box.height / 2))
+    }
+  });
+}
+
 test("mail shell stays inside the viewport", async ({ page }, testInfo) => {
   await login(page);
   await expectNoPageOverflow(page);
@@ -58,7 +70,7 @@ test("mobile navigation drawers open with one tap", async ({ page }, testInfo) =
   await expect(page.locator("#layout-menu")).toHaveClass(/cybrense-mobile-drawer-open/);
   await expect(menuButton).toHaveAttribute("aria-expanded", "true");
 
-  await backdrop.click();
+  await closeDrawerFromBackdrop(backdrop);
   await expect(page.locator("body")).not.toHaveClass(/cybrense-mobile-menu-open/);
 
   await expect(folderButton).toBeVisible();
@@ -67,7 +79,7 @@ test("mobile navigation drawers open with one tap", async ({ page }, testInfo) =
   await expect(page.locator("#layout-sidebar")).toHaveClass(/cybrense-mobile-drawer-open/);
   await expect(folderButton).toHaveAttribute("aria-expanded", "true");
 
-  await backdrop.click();
+  await closeDrawerFromBackdrop(backdrop);
   await expect(page.locator("body")).not.toHaveClass(/cybrense-mobile-sidebar-open/);
   await expectNoPageOverflow(page);
 });
