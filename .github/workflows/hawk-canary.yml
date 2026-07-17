@@ -1,0 +1,66 @@
+name: Hawk dependency canary
+
+on:
+  push:
+    branches:
+      - "renovate/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hawk-canary-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout dependency branch without credentials
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+
+      - name: Validate dependency resolution in the isolated runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          checked=0
+
+          if [[ -f package-lock.json || -f npm-shrinkwrap.json ]]; then
+            npm ci --ignore-scripts --no-audit --no-fund
+            checked=1
+          elif [[ -f pnpm-lock.yaml ]]; then
+            corepack enable
+            pnpm install --frozen-lockfile --ignore-scripts
+            checked=1
+          elif [[ -f yarn.lock ]]; then
+            corepack enable
+            if [[ -f .yarnrc.yml ]]; then
+              yarn install --immutable --mode=skip-builds
+            else
+              yarn install --frozen-lockfile --ignore-scripts
+            fi
+            checked=1
+          fi
+
+          if [[ -f requirements.txt ]]; then
+            python -m pip install --dry-run --disable-pip-version-check -r requirements.txt
+            checked=1
+          fi
+
+          if [[ -f composer.lock ]] && command -v composer >/dev/null 2>&1; then
+            composer install --dry-run --no-interaction --no-plugins --no-scripts
+            checked=1
+          fi
+
+          if [[ "${checked}" -eq 0 ]]; then
+            echo "No supported lockfile was found; repository CI remains authoritative."
+          fi
