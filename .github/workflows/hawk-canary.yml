@@ -13,7 +13,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  dependency-canary:
+  sandbox:
+    name: Sandbox dependency resolution
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -36,6 +37,7 @@ jobs:
 
           if [[ -f package-lock.json || -f npm-shrinkwrap.json ]]; then
             npm ci --ignore-scripts --no-audit --no-fund
+            npm sbom --sbom-format spdx > hawk-sbom.spdx.json
             checked=1
           elif [[ -f pnpm-lock.yaml ]]; then
             corepack enable
@@ -56,11 +58,186 @@ jobs:
             checked=1
           fi
 
-          if [[ -f composer.lock ]] && command -v composer >/dev/null 2>&1; then
+          if [[ -f composer.json ]] && command -v composer >/dev/null 2>&1; then
+            composer validate --strict --no-check-publish
             composer install --dry-run --no-interaction --no-plugins --no-scripts
+            checked=1
+          fi
+
+          if [[ -f pom.xml ]] && command -v mvn >/dev/null 2>&1; then
+            mvn --batch-mode --no-transfer-progress -DskipTests dependency:go-offline
+            checked=1
+          fi
+
+          if find . -maxdepth 3 -type f ( -name '*.sln' -o -name '*.csproj' -o -name '*.fsproj' ) -print -quit | grep -q .; then
+            dotnet restore --locked-mode
+            checked=1
+          fi
+
+          if [[ -f compose.yml || -f compose.yaml || -f docker-compose.yml || -f docker-compose.yaml ]]; then
+            docker compose config --quiet
+            checked=1
+          fi
+
+          if [[ -f Dockerfile ]]; then
+            docker build --check .
+            checked=1
+          fi
+
+          if find .github/workflows -maxdepth 1 -type f ( -name '*.yml' -o -name '*.yaml' ) -print -quit 2>/dev/null | grep -q .; then
+            if grep -RHE '^[[:space:]]*uses:[[:space:]]*[^#[:space:]]+@(main|master|v[0-9]+([.][0-9]+)*)[[:space:]]*(#.*)?$' .github/workflows; then
+              echo "GitHub Actions must be pinned to immutable commit SHAs." >&2
+              exit 1
+            fi
             checked=1
           fi
 
           if [[ "${checked}" -eq 0 ]]; then
             echo "No supported lockfile was found; repository CI remains authoritative."
           fi
+
+      - name: Enforce repository license policy
+        if: ${{ hashFiles('hawk-sbom.spdx.json') != '' }}
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const profiles = {
+            strict: {
+              denied: ["AGPL-3.0", "AGPL-3.0-only", "AGPL-3.0-or-later", "BUSL-1.1", "SSPL-1.0"],
+              unknown: "block"
+            },
+            balanced: { denied: ["BUSL-1.1", "SSPL-1.0"], unknown: "warn" },
+            fast: { denied: ["SSPL-1.0"], unknown: "allow" }
+          };
+          const repositoryPolicy = fs.existsSync(".github/hawk-policy.json")
+            ? JSON.parse(fs.readFileSync(".github/hawk-policy.json", "utf8"))
+            : { profile: "balanced" };
+          const policy = profiles[repositoryPolicy.profile] || profiles.balanced;
+          const sbom = JSON.parse(fs.readFileSync("hawk-sbom.spdx.json", "utf8"));
+          const violations = [];
+          for (const packageEntry of sbom.packages || []) {
+            const license = String(
+              packageEntry.licenseConcluded || packageEntry.licenseDeclared || ""
+            ).toUpperCase();
+            const unknown = ["", "NONE", "NOASSERTION", "UNKNOWN"].includes(license);
+            const denied = policy.denied.find((item) => license.includes(item));
+            if (denied || (unknown && policy.unknown === "block")) {
+              violations.push(
+                (packageEntry.name || packageEntry.SPDXID || "unknown") +
+                  ": " +
+                  (denied || "NOASSERTION")
+              );
+            } else if (unknown && policy.unknown === "warn") {
+              console.warn("Unknown package license: " + (packageEntry.name || "unknown"));
+            }
+          }
+          if (violations.length) {
+            console.error("Hawk license policy blocked:\n" + violations.join("\n"));
+            process.exit(1);
+          }
+          NODE
+
+      - name: Upload sandbox SBOM
+        if: ${{ hashFiles('hawk-sbom.spdx.json') != '' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: hawk-sbom-${{ github.run_id }}
+          path: hawk-sbom.spdx.json
+          if-no-files-found: error
+          retention-days: 30
+
+  staging:
+    name: Staging quality gate
+    needs: sandbox
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout dependency branch without credentials
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+
+      - name: Run repository quality gates in an isolated runner
+        shell: bash
+        env:
+          CI: "true"
+          HAWK_CANARY_STAGE: staging
+        run: |
+          set -euo pipefail
+
+          if [[ -f package-lock.json || -f npm-shrinkwrap.json ]]; then
+            npm ci --ignore-scripts --no-audit --no-fund
+            npm run lint --if-present
+            npm test --if-present
+            npm run build --if-present
+          elif [[ -f pnpm-lock.yaml ]]; then
+            corepack enable
+            pnpm install --frozen-lockfile --ignore-scripts
+            pnpm run --if-present lint
+            pnpm run --if-present test
+            pnpm run --if-present build
+          elif [[ -f yarn.lock ]]; then
+            corepack enable
+            if [[ -f .yarnrc.yml ]]; then
+              yarn install --immutable --mode=skip-builds
+            else
+              yarn install --frozen-lockfile --ignore-scripts
+            fi
+            for script in lint test build; do
+              if node -e "process.exit(require('./package.json').scripts?.['$script'] ? 0 : 1)"; then
+                yarn run "$script"
+              fi
+            done
+          fi
+
+          if [[ -f requirements.txt ]]; then
+            python -m compileall -q .
+          fi
+
+          if [[ -f composer.json ]] && command -v composer >/dev/null 2>&1; then
+            composer install --no-interaction --no-plugins --no-scripts
+            composer check-platform-reqs
+          fi
+
+          if [[ -f pom.xml ]] && command -v mvn >/dev/null 2>&1; then
+            mvn --batch-mode --no-transfer-progress verify
+          fi
+
+          if find . -maxdepth 3 -type f ( -name '*.sln' -o -name '*.csproj' -o -name '*.fsproj' ) -print -quit | grep -q .; then
+            dotnet restore --locked-mode
+            dotnet test --no-restore
+          fi
+
+          if [[ -f compose.yml || -f compose.yaml || -f docker-compose.yml || -f docker-compose.yaml ]]; then
+            docker compose config --quiet
+          fi
+
+          if [[ -f Dockerfile ]]; then
+            docker build --check .
+          fi
+
+  production-gate:
+    name: Production promotion gate
+    needs: staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Record successful promotion
+        shell: bash
+        run: |
+          {
+            echo "## Hawk canary promotion"
+            echo
+            echo "- Sandbox dependency resolution: passed"
+            echo "- Staging quality gate: passed"
+            echo "- Multi-ecosystem validation: passed"
+            echo "- Production gate: ready for repository review"
+          } >> "$GITHUB_STEP_SUMMARY"
