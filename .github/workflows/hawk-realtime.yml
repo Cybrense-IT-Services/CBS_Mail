@@ -1,0 +1,42 @@
+name: Hawk real-time governance
+
+on:
+  issue_comment:
+    types:
+      - created
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - labeled
+      - unlabeled
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hawk-realtime-${{ github.event_name }}-${{ github.event.comment.id || github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  process:
+    if: >-
+      vars.HAWK_APP_ID != '' &&
+      ((github.event_name == 'issue_comment' &&
+        startsWith(github.event.comment.body, '/hawk')) ||
+       github.event_name == 'pull_request_target')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # The pinned Action never checks out or executes pull-request code.
+      - name: Process trusted Hawk event
+        uses: Cybrense-IT-Services/Hawk@b83c06daaa27e4ac4dd41a806d9201e012cf42c6
+        with:
+          allowed-organizations: Cybrense-IT-Services
+          app-id: ${{ vars.HAWK_APP_ID }}
+          kill-switch: ${{ vars.HAWK_KILL_SWITCH || 'false' }}
+          maintainer-repository: Cybrense-IT-Services/Hawk
+          private-key: ${{ secrets.HAWK_PRIVATE_KEY }}
