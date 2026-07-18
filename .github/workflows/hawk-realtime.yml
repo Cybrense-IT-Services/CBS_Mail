@@ -33,7 +33,7 @@ jobs:
     steps:
       # The pinned Action never checks out or executes pull-request code.
       - name: Process trusted Hawk event
-        uses: Cybrense-IT-Services/Hawk@b83c06daaa27e4ac4dd41a806d9201e012cf42c6
+        uses: Cybrense-IT-Services/Hawk@56950c47a7180a9fcf1bf37aa1613d5f4d78fa81
         with:
           allowed-organizations: Cybrense-IT-Services
           app-id: ${{ vars.HAWK_APP_ID }}
