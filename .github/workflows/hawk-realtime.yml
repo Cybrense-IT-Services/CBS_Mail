@@ -31,9 +31,29 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      # The pinned Action never checks out or executes pull-request code.
+      - name: Create short-lived Hawk source token
+        id: hawk-source-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.HAWK_APP_ID }}
+          private-key: ${{ secrets.HAWK_PRIVATE_KEY }}
+          owner: Cybrense-IT-Services
+          repositories: Hawk
+          permission-contents: read
+
+      # Public repositories cannot reference a private organization Action
+      # directly. Check out only the immutable Hawk source, never PR code.
+      - name: Checkout reviewed Hawk Action
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Cybrense-IT-Services/Hawk
+          ref: 69a3e07ac62a3933cdcc0174f6021252dcb606dd
+          token: ${{ steps.hawk-source-token.outputs.token }}
+          path: .hawk-action
+          persist-credentials: false
+
       - name: Process trusted Hawk event
-        uses: Cybrense-IT-Services/Hawk@56950c47a7180a9fcf1bf37aa1613d5f4d78fa81
+        uses: ./.hawk-action
         with:
           allowed-organizations: Cybrense-IT-Services
           app-id: ${{ vars.HAWK_APP_ID }}
