@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           repository: Cybrense-IT-Services/Hawk
-          ref: b286310af031577c31f5d3e4fd662439b3ed9566
+          ref: ba205ba2778401e352bbc558ede2781c578be701
           token: ${{ steps.hawk-source-token.outputs.token }}
           path: .hawk-action
           persist-credentials: false
