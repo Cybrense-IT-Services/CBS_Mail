@@ -1,4 +1,4 @@
-FROM roundcube/roundcubemail@sha256:76503fb00caf1cb0ee7731723d5bf31b492383b689d532fa943c70e885913687
+FROM roundcube/roundcubemail@sha256:412a79e70e783f9bb8a6e22a862be5e1a0164026bf00cc90f14fdc8f7cab97cc
 
 LABEL org.opencontainers.image.title="CBS Mail"
 LABEL org.opencontainers.image.description="Cybrense UI and PWA layer for Roundcube"
